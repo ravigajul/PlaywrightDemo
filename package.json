@@ -1,0 +1,25 @@
+{
+  "name": "fnd-playwright-demo",
+  "version": "1.0.0",
+  "description": "Floor & Decor Playwright Capability Demo",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "tier1": "npx playwright test tier1-navigation --project=chromium --headed",
+    "tier2": "npx playwright test tier2-locators --project=chromium --headed",
+    "tier3": "npx playwright test tier3-user-flows --project=chromium --headed",
+    "tier4": "npx playwright test tier4-network --project=chromium --headed",
+    "tier5": "npx playwright test tier5-multi-browser --headed",
+    "tier6:update": "npx playwright test tier6-visual --update-snapshots --project=chromium",
+    "tier6": "npx playwright test tier6-visual --project=chromium",
+    "tier7": "npx playwright test tier7-pom --project=chromium --headed",
+    "tier8": "npx playwright test tier8-config-power --project=parallel-demo",
+    "report": "npx playwright show-report",
+    "trace": "npx playwright show-trace"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.19.19",
+    "typescript": "^5.8.0"
+  }
+}

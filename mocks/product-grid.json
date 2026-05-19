@@ -1,0 +1,24 @@
+{
+  "total": 3,
+  "start": 0,
+  "hits": [
+    {
+      "productId": "MOCK-001",
+      "productName": "Premium Porcelain Tile (MOCKED)",
+      "price": 2.49,
+      "rating": 4.5
+    },
+    {
+      "productId": "MOCK-002",
+      "productName": "Marble Look Tile (MOCKED)",
+      "price": 3.99,
+      "rating": 4.8
+    },
+    {
+      "productId": "MOCK-003",
+      "productName": "Waterproof Vinyl Plank (MOCKED)",
+      "price": 1.99,
+      "rating": 4.3
+    }
+  ]
+}

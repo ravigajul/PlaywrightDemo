@@ -1,0 +1,28 @@
+{
+  "suggestions": {
+    "phrases": [
+      { "value": "marble tile", "exactMatch": false },
+      { "value": "marble flooring", "exactMatch": false },
+      { "value": "marble mosaic tile", "exactMatch": false }
+    ],
+    "products": [
+      {
+        "productName": "Carrara White Marble Tile (MOCKED)",
+        "productId": "100001234",
+        "price": "$3.99 / sqft",
+        "imageUrl": ""
+      },
+      {
+        "productName": "Calacatta Gold Marble (MOCKED)",
+        "productId": "100001235",
+        "price": "$5.49 / sqft",
+        "imageUrl": ""
+      }
+    ],
+    "categories": [
+      { "name": "Tile", "id": "tile", "url": "/tile" },
+      { "name": "Natural Stone", "id": "stone", "url": "/stone" }
+    ]
+  },
+  "redirectURL": null
+}
