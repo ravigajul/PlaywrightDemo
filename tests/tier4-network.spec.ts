@@ -138,6 +138,36 @@ test.describe('Tier 4 — Network Interception & API Mocking', () => {
     }
   });
 
+  test('mock — intercept JSONPlaceholder API and return custom data', async ({ page }) => {
+    // Step 1: navigate to real URL — browser shows actual JSON response
+    await page.goto('https://jsonplaceholder.typicode.com/posts/1');
+    const real = JSON.parse(await page.locator('body').innerText());
+    console.log('\n=== REAL response from JSONPlaceholder ===');
+    console.log(JSON.stringify(real, null, 2));
+
+    // Step 2: intercept and reload — browser now shows the mocked response
+    await page.route('https://jsonplaceholder.typicode.com/posts/1', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          userId: 99,
+          id: 1,
+          title: 'MOCKED BY PLAYWRIGHT',
+          body: 'This response was intercepted and replaced.',
+        }),
+      });
+    });
+
+    await page.reload();
+    const mocked = JSON.parse(await page.locator('body').innerText());
+    console.log('\n=== MOCKED response (intercepted by Playwright) ===');
+    console.log(JSON.stringify(mocked, null, 2));
+
+    expect(mocked.title).toBe('MOCKED BY PLAYWRIGHT');
+    expect(mocked.userId).toBe(99);
+  });
+
   test('abort — block all images and measure load time delta', async ({ page }) => {
     // First: normal load time
     const t1 = Date.now();
