@@ -45,7 +45,7 @@ test.describe('Tier 4 — Network Interception & API Mocking', () => {
     const response = await suggestionPromise;
     if (response) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const timing = (response as any).timing() as { requestStart: number; responseEnd: number };
+      const timing = (response.request() as any).timing() as { requestStart: number; responseEnd: number };
       console.log('\n=== Search Suggestion API ===');
       console.log('URL:', response.url().substring(0, 100));
       console.log('Status:', response.status());
@@ -57,16 +57,36 @@ test.describe('Tier 4 — Network Interception & API Mocking', () => {
     }
   });
 
-  test('mock — intercept search API and inject custom data', async ({ page }) => {
+  test('mock — intercept search API and inject custom data', async ({ page }, testInfo) => {
     // route.fulfill() replaces the real response with our mock data
     let intercepted = false;
-    await page.route('**/*GetSuggestions*', async (route) => {
+    const loudSuggestion = 'MOCK RESULT - MARBLE DEMO';
+    await page.route('**/1/indexes/production__products__default_query_suggestions/query*', async (route) => {
       intercepted = true;
       console.log('\nINTERCEPTED: Search Suggestions API');
+      const mockedPayload = {
+        ...searchMock,
+        suggestions: {
+          ...searchMock.suggestions,
+          phrases: [
+            { value: loudSuggestion, exactMatch: false },
+            ...(searchMock.suggestions?.phrases ?? []),
+          ],
+          products: [
+            {
+              productName: `${loudSuggestion} PRODUCT`,
+              productId: '999999999',
+              price: '$0.99 / sqft',
+              imageUrl: '',
+            },
+            ...(searchMock.suggestions?.products ?? []),
+          ],
+        },
+      };
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(searchMock),
+        body: JSON.stringify(mockedPayload),
       });
     });
 
@@ -75,7 +95,41 @@ test.describe('Tier 4 — Network Interception & API Mocking', () => {
     await searchBar.click();
     await searchBar.pressSequentially('marble', { delay: 100 });
     await page.waitForTimeout(800);
-    await page.screenshot({ path: 'test-results/screenshots/mocked-suggestions.png' });
+
+    if (intercepted) {
+      // Add a visible badge in the page so interception is obvious in UI/screenshot.
+      await page.evaluate((mockText) => {
+        const id = 'pw-mock-badge';
+        if (document.getElementById(id)) return;
+        const badge = document.createElement('div');
+        badge.id = id;
+        badge.textContent = `PLAYWRIGHT MOCK ACTIVE: ${mockText}`;
+        badge.setAttribute('style', [
+          'position:fixed',
+          'top:16px',
+          'right:16px',
+          'z-index:2147483647',
+          'padding:12px 16px',
+          'border-radius:10px',
+          'font:700 14px/1.2 Arial, sans-serif',
+          'color:#ffffff',
+          'background:#0f766e',
+          'box-shadow:0 10px 30px rgba(0,0,0,.35)',
+          'border:2px solid #14b8a6',
+        ].join(';'));
+        document.body.appendChild(badge);
+      }, loudSuggestion);
+      await expect(page.getByText(`PLAYWRIGHT MOCK ACTIVE: ${loudSuggestion}`)).toBeVisible();
+    }
+
+    const mockUiShot = await page.screenshot({
+      path: 'test-results/screenshots/mocked-suggestions.png',
+      fullPage: true,
+    });
+    await testInfo.attach('mocked-suggestions-ui', {
+      body: mockUiShot,
+      contentType: 'image/png',
+    });
 
     if (intercepted) {
       console.log('Mock was served — the UI received our custom data.');

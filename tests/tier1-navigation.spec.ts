@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import * as fs from 'fs';
+import fs from 'fs';
 
 test.describe('Tier 1 — Navigation & Basic Assertions', () => {
 
