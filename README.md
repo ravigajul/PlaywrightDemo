@@ -2,7 +2,7 @@
 
 A progressive, 8-tier TypeScript demo showcasing Playwright's full capability stack — from basic navigation to network interception, visual regression, and parallel execution — using [flooranddecor.com](https://www.flooranddecor.com/) as the live target.
 
-Designed for a **30–45 minute client presentation**.
+Built as an interview exercise, designed for a 30-45 minute walkthrough.
 
 ---
 
